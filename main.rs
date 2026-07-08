@@ -1,52 +1,64 @@
+const SAMPLE_SCALE_FACTOR: usize = 7;
+
+struct Matrix {
+    contents: Vec<char>,
+    side_length: usize,
+}
+
+impl Matrix {
+    fn new(r: usize) -> Matrix {
+        let side_length = 2 * r + 1;
+        Matrix {
+            contents: vec![' '; side_length * side_length],
+            side_length,
+        }
+    }
+    fn set(&mut self, x: usize, y: usize) {
+        self.contents[x + y * self.side_length] = '#';
+    }
+    fn get(&self, x: usize, y: usize) -> char {
+        self.contents[x + y * self.side_length]
+    }
+}
+
 fn main() {
-    let (x, y, radius) = get_inputs();
-    let matrix = write_matrix(x, y, radius);
+    let radius = get_input();
+    let mut matrix = Matrix::new(radius);
+    write_matrix(&mut matrix, radius);
     display_matrix(&matrix);
 }
 
-fn get_inputs() -> (i32, i32, i32) {
-    (
-        std::env::args()
-            .nth(1)
-            .expect("x not supplied")
-            .parse::<i32>()
-            .expect("Not a number"),
-        std::env::args()
-            .nth(2)
-            .expect("y not supplied")
-            .parse::<i32>()
-            .expect("Not a number"),
-        std::env::args()
-            .nth(3)
-            .expect("radius not supplied")
-            .parse::<i32>()
-            .expect("Not a number"),
-    )
+fn get_input() -> usize {
+    let mut args = std::env::args().skip(1);
+    args.next()
+        .expect("x not supplied")
+        .parse()
+        .expect("Not a number")
 }
 
-fn write_matrix(center_x: i32, center_y: i32, r: i32) -> Vec<Vec<char>> {
-    let mut matrix: Vec<Vec<char>> =
-        vec![vec![' '; center_x.unsigned_abs() as usize * 2]; center_y.unsigned_abs() as usize * 2];
+fn write_matrix(matrix: &mut Matrix, r: usize) {
+    let sample_size = SAMPLE_SCALE_FACTOR * r;
 
-    for t in 0..360 {
-        let rad = f64::to_radians(f64::from(t));
-        let x = f64::cos(rad) * f64::from(r) + f64::from(center_x);
-        let y = f64::sin(rad) * f64::from(r) + f64::from(center_y);
+    let r = r as f64;
+    for t in 0..sample_size {
+        let rad = f64::to_radians(t as f64 / sample_size as f64 * 360.);
+        let x = f64::cos(rad) * r + r;
+        let y = f64::sin(rad) * r + r;
 
-        assert!(x > 0.0 && y > 0.0);
+        assert!(x >= 0.0 && y >= 0.0);
 
         let x: usize = f64_to_usize(x);
         let y: usize = f64_to_usize(y);
 
-        matrix[y][x] = '#';
+        dbg!(x, y);
+        matrix.set(x, y);
     }
-    matrix
 }
 
-fn display_matrix(matrix: &Vec<Vec<char>>) {
-    for i in matrix {
-        for j in i {
-            print!("{j}");
+fn display_matrix(matrix: &Matrix) {
+    for i in 0..matrix.side_length {
+        for j in 0..matrix.side_length {
+            print!("{}", matrix.get(j, i));
         }
         println!();
     }
