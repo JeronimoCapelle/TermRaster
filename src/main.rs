@@ -1,14 +1,13 @@
-use crate::grid::Grid;
+use crate::{grid::Grid, shapes::graph_circle};
 
-const SAMPLE_SCALE_FACTOR: usize = 7;
-
-mod convertion_helper;
-mod drawer;
+mod cast;
+mod coord;
 mod grid;
+mod shapes;
 fn main() {
     let radius = get_input();
     let mut grid = Grid::new((radius * 2) + 1, (radius * 2) + 1);
-    drawer::set_circle(&mut grid, radius, radius, radius);
+    graph_circle(&mut grid, radius, radius, radius);
     display_matrix(&grid);
 }
 

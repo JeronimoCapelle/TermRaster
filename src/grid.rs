@@ -19,8 +19,9 @@ impl Grid {
         self.contents[x + y * self.width]
     }
 
-    fn _resize(&mut self) {
-        todo!()
+    fn _resize(&mut self, new_width: usize, new_height: usize) {
+        assert!(new_width >= self.width && new_height >= self.height);
+        todo!();
     }
 
     pub fn get_width(&self) -> usize {
