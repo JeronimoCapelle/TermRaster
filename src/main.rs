@@ -15,6 +15,7 @@ fn main() {
 
     grapher.graph(Shape::Point((8, 1), 'P'));
     grapher.graph(Shape::Point((1, 1), 'T'));
+    grapher.graph(Shape::Circle((20, 20), 10, '#'));
 
     grapher.draw(&mut canvas);
 
