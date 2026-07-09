@@ -1,15 +1,15 @@
 use crate::{canvas::Canvas, grapher, shapes};
 
-pub struct Grapher {
+pub struct Renderer {
     shapes: Vec<crate::shapes::Shape>,
 }
 
-impl Grapher {
-    pub fn new() -> Grapher {
-        Grapher { shapes: Vec::new() }
+impl Renderer {
+    pub fn new() -> Renderer {
+        Renderer { shapes: Vec::new() }
     }
 
-    pub fn graph(&mut self, shape: crate::Shape) {
+    pub fn add_shape(&mut self, shape: crate::Shape) {
         self.shapes.push(shape);
     }
 
@@ -17,12 +17,31 @@ impl Grapher {
         for shape in &self.shapes {
             match shape {
                 shapes::Shape::Point(coord, char) => {
-                    grapher::Grapher::draw_point(canvas, *coord, *char)
+                    grapher::Renderer::draw_point(canvas, *coord, *char)
                 }
                 shapes::Shape::Circle(coord, radius, char) => {
-                    grapher::Grapher::draw_circle(canvas, *coord, *radius, *char)
+                    grapher::Renderer::draw_circle(canvas, *coord, *radius, *char)
+                }
+                shapes::Shape::Rectangle(top_left, bottom_right, char) => {
+                    grapher::Renderer::draw_rectangle(canvas, *top_left, *bottom_right, *char)
                 }
             }
+        }
+    }
+
+    fn draw_rectangle(
+        canvas: &mut Canvas,
+        top_left: (i32, i32),
+        bottom_right: (i32, i32),
+        char: char,
+    ) {
+        for i in top_left.0..bottom_right.0 {
+            canvas.set((i, top_left.1), char);
+            canvas.set((i, bottom_right.1), char);
+        }
+        for i in top_left.1..bottom_right.1 {
+            canvas.set((top_left.0, i), char);
+            canvas.set((bottom_right.0, i), char);
         }
     }
 

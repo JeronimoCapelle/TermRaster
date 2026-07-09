@@ -69,19 +69,43 @@ impl PixelBuffer {
         self.height = new_size.1;
     }
 
+    // resize the array to set height
     pub fn resize_x(&mut self, new_width: usize) {
         self.resize((new_width, self.height));
     }
 
+    // resize the array to set width
     pub fn resize_y(&mut self, new_height: usize) {
         self.resize((self.width, new_height));
     }
 
+    // Expand the array horizontally by delta_x
     pub fn expand_x(&mut self, delta_x: usize) {
         self.resize_x(self.width + delta_x);
     }
 
+    // Expand the array vertically by delta_y
     pub fn expand_y(&mut self, delta_y: usize) {
         self.resize_y(self.height + delta_y);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_new() {
+        let buffer = PixelBuffer::new(100, 50);
+        assert_eq!(buffer.get_width(), 100);
+        assert_eq!(buffer.get_height(), 50);
+    }
+
+    #[test]
+    fn test_set_and_read() {
+        let mut buffer = PixelBuffer::default();
+        buffer.resize((6, 6));
+        buffer.set((5, 5), 'G');
+        assert_eq!(buffer.get((5, 5)), 'G');
     }
 }
