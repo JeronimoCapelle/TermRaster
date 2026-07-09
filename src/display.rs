@@ -1,14 +1,10 @@
 use crate::Canvas;
 
-pub struct Display {}
-
-impl Display {
-    pub fn draw(canvas: &Canvas) {
-        for i in 0..100 {
-            for j in 0..100 {
-                print!("{}", canvas.get((j, i)));
-            }
-            println!();
+pub fn display(canvas: &Canvas) {
+    for i in 0..50 {
+        for j in 0..50 {
+            print!("{}", canvas.get((j, i)));
         }
+        println!();
     }
 }

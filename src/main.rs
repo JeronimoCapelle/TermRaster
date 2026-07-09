@@ -1,23 +1,23 @@
 mod canvas;
 mod display;
 mod grapher;
-mod mem_grid;
+mod pixelbuffer;
 mod shapes;
 
 use crate::canvas::Canvas;
-use crate::display::Display;
 use crate::grapher::Grapher;
 use crate::shapes::Shape;
 
 fn main() {
-    let mut canvas = Canvas::_debug_with_memory();
+    let mut canvas = Canvas::new();
     let mut grapher = Grapher::new();
 
-    grapher.graph(Shape::Point((8, 1), 'P'));
-    grapher.graph(Shape::Point((1, 1), 'T'));
-    grapher.graph(Shape::Circle((20, 20), 10, '#'));
+    grapher.graph(Shape::Point((2, 2), 'P'));
+    grapher.graph(Shape::Point((4, 2), 'E'));
+    grapher.graph(Shape::Point((4, 4), 'C'));
+    grapher.graph(Shape::Circle((15, 15), 7, '#'));
 
     grapher.draw(&mut canvas);
 
-    Display::draw(&canvas);
+    display::display(&canvas);
 }
