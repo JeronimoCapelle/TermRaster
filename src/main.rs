@@ -1,11 +1,13 @@
 mod canvas;
+mod converter;
 mod display;
-mod grapher;
-mod pixelbuffer;
+mod parser;
+mod pixel_buffer;
+mod renderer;
 mod shapes;
 
 use crate::canvas::Canvas;
-use crate::grapher::Renderer;
+use crate::renderer::Renderer;
 use crate::shapes::Shape;
 
 fn main() {
@@ -18,7 +20,7 @@ fn main() {
     renderer.add_shape(Shape::Circle((15, 15), 7, '#'));
     renderer.add_shape(Shape::Rectangle((6, 6), (10, 10), '='));
 
-    renderer.draw(&mut canvas);
+    renderer.render(&mut canvas);
 
     display::display(&canvas);
 }
