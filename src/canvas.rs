@@ -53,9 +53,9 @@ impl Canvas {
                 .resize_horizontally_by((self.offset.0 - coord.0) as usize);
             self.offset.0 -= coord.0;
         } else if coord.0 >= self.offset.0 + self.mem_grid.width() as i32 {
-            self.mem_grid.resize_horizontally_by(dbg!(
-                (coord.0 - self.offset.0 + 1) as usize - self.mem_grid.width()
-            ));
+            self.mem_grid.resize_horizontally_by(
+                (coord.0 - self.offset.0 + 1) as usize - self.mem_grid.width(),
+            );
         }
 
         if coord.1 < self.offset.1 {

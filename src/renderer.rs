@@ -29,7 +29,26 @@ impl Renderer {
                 shapes::Shape::Rectangle(top_left, bottom_right, char) => {
                     renderer::Renderer::render_rectangle(canvas, *top_left, *bottom_right, *char);
                 }
+                shapes::Shape::Line(coord_1, coord_2, char) => {
+                    renderer::Renderer::render_line(canvas, *coord_1, *coord_2, *char);
+                }
             }
+        }
+    }
+
+    fn render_line(canvas: &mut Canvas, coord_1: (i32, i32), coord_2: (i32, i32), char: char) {
+        let slope = f64::from(coord_2.1 - coord_1.1) / f64::from(coord_2.0 - coord_1.0);
+
+        for x in coord_1.0..coord_2.0 {
+            let y = (slope * f64::from(x - coord_1.0) + f64::from(coord_1.1)).round() as i32;
+            canvas.set((x, y), char);
+        }
+
+        let slope = f64::from(coord_2.0 - coord_1.0) / f64::from(coord_2.1 - coord_1.1);
+
+        for y in coord_1.1..coord_2.1 {
+            let x = (slope * f64::from(y - coord_1.1) + f64::from(coord_1.0)).round() as i32;
+            canvas.set((x, y), char);
         }
     }
 

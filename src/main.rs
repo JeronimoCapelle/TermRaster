@@ -20,6 +20,8 @@ fn main() {
     renderer.add_shape(Shape::Circle((15, 15), 7, '#'));
     renderer.add_shape(Shape::Rectangle((6, 6), (10, 10), '='));
 
+    renderer.add_shape(Shape::Line((30, 20), (34, 27), '%'));
+
     renderer.render(&mut canvas);
 
     display::display(&canvas);
