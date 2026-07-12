@@ -1,27 +1,28 @@
 # TermRaster
 
-A memory-efficient, interactive software rasterizer built from scratch to render graphics directly in the terminal.
+[![Build Status](https://img.shields.io/github/actions/workflow/status/JeronimoCapelle/TermRaster/rust.yml?branch=main)](https://github.com/JeronimoCapelle/TermRaster/actions)
+[![Crates.io](https://img.shields.io/crates/v/termraster.svg)](https://crates.io/crates/termraster)
+[![License: CC0-1.0](https://img.shields.io/badge/License-CC0_1.0-lightgrey.svg)](LICENSE)
 
-TermRaster is an exploration of low-level graphics programming and idiomatic Rust. Instead of relying on existing rendering engines or heavy external graphics libraries, this project implements core rasterization algorithms from the ground up. The focus is on performance, memory safety, and understanding the mathematical foundations of rendering.
+**TermRaster** is a zero-dependency software rasterizer and data visualization engine built entirely from scratch in pure Rust. 
 
-## Core Philosophy
+Designed for backend engineers and sysadmins working in headless environments (like SSH sessions), TermRaster translates raw data arrays and geometric primitives into high-performance, buffered ASCII graphics directly in the terminal window.
 
-* **From Scratch:** Mathematical calculations, framebuffers, and rendering algorithms (like line drawing and polygon filling) are implemented manually to solidify an understanding of computer graphics.
-* **Memory Efficiency:** Designed to minimize allocations during the render loop, utilizing flat arrays for framebuffers and aggressively reusing memory blocks.
-* **Idiomatic Rust:** The codebase strictly adheres to Rust's safety guarantees and formatting standards, running with aggressive pedantic lints to ensure high-quality, professional code.
+## ⚡ Core Architecture & Systems Design
 
-## Future Capabilities & Goals
+This project was built to explore the absolute limits of low-level terminal rendering, prioritizing CPU cache locality, mathematical efficiency, and strict memory safety. 
 
-The project is actively evolving as a learning environment for graphics engineering. Key technical features include:
+* **100% Integer-Only Pipeline:** Floating-point operations (FPUs) are slow and unnecessary for pixel grids. All geometric rendering is handled via integer-only mathematics, including a custom implementation of **Bresenham’s Line Algorithm** and the **Midpoint Circle Algorithm**, completely eliminating `f64` and `.sqrt()` overhead.
+* **Data-Oriented Memory Layout:** Shapes are stored using strict Enums rather than `Box<dyn Trait>`, completely eliminating dynamic dispatch and vtable lookups. The `Canvas` utilizes a flat, 1D contiguous array (`Vec<char>`) mapping 2D coordinates to 1D indices to maximize L1/L2 CPU cache hits.
+* **I/O Syscall Optimization:** Standard terminal printing causes severe bottlenecks due to repeated `write()` system calls. TermRaster employs a custom double-buffering architecture, allocating a pre-sized `String` buffer and executing exactly one I/O flush per frame to ensure zero tearing and minimal OS overhead.
+* **Zero Dependencies:** The core rendering engine is built using only the Rust Standard Library (`std`). 
 
-* **Custom Framebuffers:** A double-buffered internal state that maps 2D coordinates to 1D arrays for fast iteration and rendering.
-* **Shape Generation:** Algorithmic generation of basic geometry (lines, rectangles, circles).
-* **Character Mapping:** Variable character density for rendering, allowing different ASCII characters to represent different elements, borders, or filled areas.
-* **Interactive Viewport:** Real-time translation of the camera view, allowing the user to navigate the rendered space interactively.
-* **Filled vs. Unfilled Geometry:** Scanline algorithms to distinguish between hollow wireframes and solid filled shapes.
+## 🛠️ Dual-Use Design
 
-## Technical Approach
+TermRaster operates as both a standalone Command Line Interface (CLI) for immediate data visualization, and a highly modular Rust library for custom terminal UI backends.
 
-TermRaster operates by constructing a virtual grid of characters in memory. During each draw, shapes are mathematically plotted onto this grid using algorithms. Once the frame calculation is complete, the entire buffer is flushed to the standard output using optimized ANSI escape sequences, ensuring smooth frame rates without visual tearing. 
-
-By enforcing maximum compiler strictness and eliminating unnecessary dependencies, the architecture remains lightweight and highly maintainable.
+### 1. The CLI Plotter (In Development)
+Instantly pipe data into TermRaster to generate scaled graphs without leaving your SSH session.
+```bash
+# Example usage:
+cat server_latency.csv | termraster plot --type line --scale auto

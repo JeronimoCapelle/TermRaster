@@ -1,4 +1,5 @@
 #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+/// Convert f64 to usize
 pub fn f64_to_usize(x: f64) -> usize {
     assert!(x >= 0.0, "Value cannot be negative.");
     assert!(
@@ -9,18 +10,21 @@ pub fn f64_to_usize(x: f64) -> usize {
     x as usize
 }
 
+/// Convert usize to i32
 #[allow(clippy::cast_possible_truncation, clippy::cast_possible_wrap)]
 pub fn usize_to_i32(x: usize) -> i32 {
     assert!(i32::try_from(x).is_ok(), "Value is too big.");
     x as i32
 }
 
+/// Convert i32 to usize
 #[allow(clippy::cast_sign_loss)]
 pub fn i32_to_usize(x: i32) -> usize {
     assert!(x >= 0, "Value cannot be negative.");
     x as usize
 }
 
+/// Convert f64 to i32
 #[allow(clippy::cast_possible_truncation)]
 pub fn f64_to_i32(x: f64) -> i32 {
     assert!(
