@@ -1,4 +1,4 @@
-use crate::{canvas::Canvas, renderer, shapes};
+use crate::{canvas::Canvas, converter, renderer, shapes};
 
 ///The renderer holds the objects to be drawn on a canvas and then displayed.
 pub struct Renderer {
@@ -40,14 +40,18 @@ impl Renderer {
         let slope = f64::from(coord_2.1 - coord_1.1) / f64::from(coord_2.0 - coord_1.0);
 
         for x in coord_1.0..coord_2.0 {
-            let y = (slope * f64::from(x - coord_1.0) + f64::from(coord_1.1)).round() as i32;
+            let y = converter::f64_to_i32(
+                (slope * f64::from(x - coord_1.0) + f64::from(coord_1.1)).round(),
+            );
             canvas.set((x, y), char);
         }
 
         let slope = f64::from(coord_2.0 - coord_1.0) / f64::from(coord_2.1 - coord_1.1);
 
         for y in coord_1.1..coord_2.1 {
-            let x = (slope * f64::from(y - coord_1.1) + f64::from(coord_1.0)).round() as i32;
+            let x = converter::f64_to_i32(
+                (slope * f64::from(y - coord_1.1) + f64::from(coord_1.0)).round(),
+            );
             canvas.set((x, y), char);
         }
     }
@@ -70,12 +74,12 @@ impl Renderer {
 
     fn render_circle(canvas: &mut Canvas, coord: (i32, i32), radius: i32, char: char) {
         for y in -radius..radius {
-            let mod_x = f64::from(radius * radius - y * y).sqrt().round() as i32;
+            let mod_x = converter::f64_to_i32(f64::from(radius * radius - y * y).sqrt().round());
             canvas.set((coord.0 + mod_x, coord.1 + y), char);
             canvas.set((coord.0 - mod_x, coord.1 + y), char);
         }
         for x in -radius..radius {
-            let mod_y = f64::from(radius * radius - x * x).sqrt().round() as i32;
+            let mod_y = converter::f64_to_i32(f64::from(radius * radius - x * x).sqrt().round());
             canvas.set((coord.0 + x, coord.1 + mod_y), char);
             canvas.set((coord.0 + x, coord.1 - mod_y), char);
         }
