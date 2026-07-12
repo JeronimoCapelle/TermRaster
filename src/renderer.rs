@@ -1,8 +1,12 @@
-use crate::{canvas::Canvas, converter, renderer, shapes};
+use crate::{
+    canvas::Canvas,
+    converter::{self, usize_to_i32},
+    renderer, shapes,
+};
 
 ///The renderer holds the objects to be drawn on a canvas and then displayed.
 pub struct Renderer {
-    shapes: Vec<crate::shapes::Shape>,
+    shapes: Vec<crate::shapes::Object>,
 }
 
 impl Renderer {
@@ -12,7 +16,7 @@ impl Renderer {
     }
 
     ///Add a new shape to the collection of the renderer
-    pub fn add_shape(&mut self, shape: crate::Shape) {
+    pub fn add_shape(&mut self, shape: crate::Object) {
         self.shapes.push(shape);
     }
 
@@ -20,25 +24,37 @@ impl Renderer {
     pub fn render(&self, canvas: &mut Canvas) {
         for shape in &self.shapes {
             match shape {
-                shapes::Shape::Point(coord, char) => {
+                shapes::Object::Point(coord, char) => {
                     renderer::Renderer::render_point(canvas, *coord, *char);
                 }
-                shapes::Shape::CircleOutline(coord, radius, char) => {
+                shapes::Object::CircleOutline(coord, radius, char) => {
                     renderer::Renderer::render_circle_outline(canvas, *coord, *radius, *char);
                 }
-                shapes::Shape::RectangleOutline(coord_1, coord_2, char) => {
+                shapes::Object::RectangleOutline(coord_1, coord_2, char) => {
                     renderer::Renderer::render_rectangle_outline(canvas, *coord_1, *coord_2, *char);
                 }
-                shapes::Shape::Line(coord_1, coord_2, char) => {
+                shapes::Object::Line(coord_1, coord_2, char) => {
                     renderer::Renderer::render_line(canvas, *coord_1, *coord_2, *char);
                 }
-                shapes::Shape::Circle(coord, radius, char) => {
+                shapes::Object::Circle(coord, radius, char) => {
                     renderer::Renderer::render_circle(canvas, *coord, *radius, *char);
                 }
-                shapes::Shape::Rectangle(coord_1, coord_2, char) => {
+                shapes::Object::Rectangle(coord_1, coord_2, char) => {
                     renderer::Renderer::render_rectangle(canvas, *coord_1, *coord_2, *char);
                 }
+                shapes::Object::Text(coord, text) => {
+                    renderer::Renderer::render_text(canvas, *coord, text);
+                }
             }
+        }
+    }
+
+    fn render_text(canvas: &mut Canvas, coord: (i32, i32), string: &str) {
+        for i in 0..string.chars().count() {
+            canvas.set(
+                (coord.0 + usize_to_i32(i), coord.1),
+                string.chars().nth(i).unwrap(),
+            );
         }
     }
 
